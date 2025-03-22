@@ -22,6 +22,7 @@ router.post('/',
         check('end').notEmpty().withMessage('Trebate staviti kada zavrsava'),
         check('title').notEmpty().withMessage('Trebate staviti ime eventa'),
         check('class').notEmpty().withMessage('Trebate odabrati boju eventa'),
+        check('type').notEmpty().isIn(['public', 'private']).withMessage('Trebate odabrati izmedu private ili public'),
     ], async (req, res) => {
     const errors = validationResult(req);
 
@@ -35,7 +36,8 @@ router.post('/',
             start: req.body.start,
             end: req.body.end,
             title: req.body.title,
-            class: req.body.class
+            class: req.body.class,
+            type: req.body.type
         };
         
         const result = await podaci_collection.insertOne(newEvent);
