@@ -5,12 +5,16 @@ import { connectToDatabase } from '../db.js';
 const db = await connectToDatabase();
 const router = express.Router();
 
+// GET
+
 router.get('/', async (req, res) => {
     let podaci_collection = db.collection('events');
     let podaci = await podaci_collection.find().toArray();
   
     res.status(200).json(podaci);
 });
+
+// POST
 
 router.post('/', 
     [
@@ -43,6 +47,35 @@ router.post('/',
         });
     } catch (error) {
         res.status(500).json({ message: 'Error u izradi eventa', error: error.message });
+    }
+});
+
+// DELETE
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const eventId = req.params.id;
+        let podaci_collection = db.collection('events');
+        
+        const { ObjectId } = await import('mongodb');
+        const objectId = new ObjectId(eventId);
+        
+        const result = await podaci_collection.deleteOne({ _id: objectId });
+        
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: 'Event nije pronađen' });
+        }
+        
+        res.status(200).json({ 
+            message: 'Event je uspješno obrisan',
+            deletedCount: result.deletedCount
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ 
+            message: 'Error u brisanju eventa', 
+            error: error.message 
+        });
     }
 });
 
