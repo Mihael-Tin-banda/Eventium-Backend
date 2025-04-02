@@ -36,7 +36,18 @@ router.post('/',
             throw new Error('Failed to generate token');
         }
         
-        res.status(200).json({ jwt_token: token });
+        const userData = {
+            _id: user._id.toString(),
+            username: user.username,
+            email: user.email,
+            ime: user.ime,
+            prezime: user.prezime
+        };
+        
+        res.status(200).json({ 
+            jwt_token: token,
+            user: userData
+        });
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).send('Server error during authentication');
