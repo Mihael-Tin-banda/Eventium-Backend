@@ -91,14 +91,13 @@ router.get('/joined', authMiddleware, async (req, res) => {
 
 // POST
 
-// Update your POST route to include authMiddleware and fix validation
 router.post('/', authMiddleware, [
     check('start').notEmpty().withMessage('Trebate staviti kada pocinje'),
     check('end').notEmpty().withMessage('Trebate staviti kada zavrsava'),
     check('title').notEmpty().withMessage('Trebate staviti ime eventa'),
     check('class').notEmpty().withMessage('Trebate odabrati boju eventa'),
     check('type').notEmpty().isIn(['public', 'private']).withMessage('Trebate odabrati izmedu private ili public')
-    // Removed author check as it will come from JWT
+    // Location is optional but structured if provided
 ], async (req, res) => {
     const errors = validationResult(req);
 
@@ -119,6 +118,11 @@ router.post('/', authMiddleware, [
             // Include description if provided
             description: req.body.description || ""
         };
+        
+        // Add location if it exists in the request
+        if (req.body.location) {
+            newEvent.location = req.body.location;
+        }
         
         const result = await eventsCollection.insertOne(newEvent);
         
