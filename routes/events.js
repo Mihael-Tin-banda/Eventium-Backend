@@ -115,7 +115,6 @@ router.post('/', authMiddleware, [
             type: req.body.type,
             author: req.user.id,
             authorName: req.user.username,
-            // Include description if provided
             description: req.body.description || ""
         };
         
@@ -173,9 +172,14 @@ router.post('/join/:id', authMiddleware, async (req, res) => {
             type: 'private',
             author: userId,
             authorName: username,
+            description: originalEvent.description,
             originalEventId: eventId.toString(),
             joined: true,
         };
+
+        if (originalEvent.location) {
+            privateEvent.location = originalEvent.location;
+        }
         
         const result = await eventsCollection.insertOne(privateEvent);
         
