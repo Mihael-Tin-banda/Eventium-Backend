@@ -97,7 +97,7 @@ router.post('/', authMiddleware, [
     check('title').notEmpty().withMessage('Trebate staviti ime eventa'),
     check('class').notEmpty().withMessage('Trebate odabrati boju eventa'),
     check('type').notEmpty().isIn(['public', 'private']).withMessage('Trebate odabrati izmedu private ili public'),
-    check('category').optional().isIn(['social', 'work', 'education', 'sport', 'entertainment', 'other']).withMessage('Trebate odabrati kategoriju')
+    check('category').optional().isIn(['social', 'business', 'education', 'sports', 'entertainment', 'other']).withMessage('Trebate odabrati kategoriju')
 ], async (req, res) => {
     const errors = validationResult(req);
 
