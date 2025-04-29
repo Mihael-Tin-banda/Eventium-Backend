@@ -165,6 +165,7 @@ router.post('/join/:id', authMiddleware, async (req, res) => {
             return res.status(400).json({ message: 'Vec ste se prikljucili eventu' });
         }
 
+        // Create a more complete copy of the event with all relevant fields
         const privateEvent = {
             start: originalEvent.start,
             end: originalEvent.end,
@@ -176,11 +177,22 @@ router.post('/join/:id', authMiddleware, async (req, res) => {
             description: originalEvent.description,
             originalEventId: eventId.toString(),
             joined: true,
+            category: originalEvent.category || "other"
         };
-
+        
+        // Copy location if it exists
         if (originalEvent.location) {
             privateEvent.location = originalEvent.location;
         }
+        
+        // Ensure we track the original author as well for reference
+        privateEvent.originalAuthor = {
+            id: originalEvent.author,
+            name: originalEvent.authorName
+        };
+        
+        // Add timestamps for when user joined
+        privateEvent.joinedAt = new Date().toISOString();
         
         const result = await eventsCollection.insertOne(privateEvent);
         
