@@ -96,8 +96,8 @@ router.post('/', authMiddleware, [
     check('end').notEmpty().withMessage('Trebate staviti kada zavrsava'),
     check('title').notEmpty().withMessage('Trebate staviti ime eventa'),
     check('class').notEmpty().withMessage('Trebate odabrati boju eventa'),
-    check('type').notEmpty().isIn(['public', 'private']).withMessage('Trebate odabrati izmedu private ili public')
-    // Location is optional but structured if provided
+    check('type').notEmpty().isIn(['public', 'private']).withMessage('Trebate odabrati izmedu private ili public'),
+    check('category').optional().isIn(['social', 'work', 'education', 'sport', 'entertainment', 'other']).withMessage('Trebate odabrati kategoriju')
 ], async (req, res) => {
     const errors = validationResult(req);
 
@@ -115,7 +115,8 @@ router.post('/', authMiddleware, [
             type: req.body.type,
             author: req.user.id,
             authorName: req.user.username,
-            description: req.body.description || ""
+            description: req.body.description || "",
+            category: req.body.category || "other"
         };
         
         // Add location if it exists in the request
